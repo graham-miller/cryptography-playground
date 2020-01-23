@@ -1,101 +1,27 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using NUnit.Framework;
 
 namespace CryptographyPlayground.CryptographyWalkthrough
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
-    public class TestHarness
+    public class Implementation
     {
-        private const string KeyPairContainerName = "Key01";
-        private const string PlainText = "The greatest glory in living lies not in never falling, but in rising every time we fall.";
+        public bool CryptoServiceProviderIsPublicOnly => _rsaCryptoServiceProvider.PublicOnly;
 
-        private static readonly CspParameters CspParameters = new CspParameters {KeyContainerName = KeyPairContainerName};
-        private static readonly string OutputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CertificatePlayground2");
-        private static readonly string PublicKeyFile = Path.Combine(OutputDirectory, "RSA PublicKey.txt");
-        private static readonly string OriginalFile = Path.Combine(OutputDirectory, "original.txt");
-        private static readonly string EncryptedFile = Path.Combine(OutputDirectory, "encrypted.enc");
-        private static readonly string DecryptedFile = Path.Combine(OutputDirectory, "decrypted.txt");
-
-        private RSACryptoServiceProvider _rsaCryptoServiceProvider;
-
-        [SetUp]
-        public void SetUp()
-        {
-            DeleteOutputDirectory();
-            Directory.CreateDirectory(OutputDirectory);
-            File.WriteAllText(OriginalFile, PlainText);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            DeleteOutputDirectory();
-        }
-
-        [Test]
-        public void CreateKeys_Encrypt_Decrypt()
-        {
-            // Create keys
-            CreateAsymmetricKey();
-            Assert.That(_rsaCryptoServiceProvider.PublicOnly, Is.False);
-
-            ExportPublicKey();
-
-            // Encrypt
-            EncryptFile(OriginalFile, EncryptedFile);
-
-            // Decrypt
-            DecryptFile(EncryptedFile, DecryptedFile);
-
-            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(PlainText));
-        }
-
-        [Test]
-        public void EncryptUsingPublicKey_DecryptUsingPrivateKey()
-        {
-            // Create Keys, export, only import public
-            CreateAsymmetricKey();
-            ExportPublicKey();
-            ImportPublicKey();
-
-            Assert.That(_rsaCryptoServiceProvider.PublicOnly, Is.True);
-
-            // Encrypt
-            EncryptFile(OriginalFile, EncryptedFile);
-
-            // Decrypt should fail (no private key)
-            try
-            {
-                DecryptFile(EncryptedFile, DecryptedFile);
-                Assert.Fail();
-            }
-            catch (Exception exception)
-            {
-                Assert.That(exception.Message, Is.EqualTo("Key does not exist."));
-            }
-
-            // Get private key, decryption now works
-            GetPrivateKey();
-            Assert.That(_rsaCryptoServiceProvider.PublicOnly, Is.False);
-
-            DecryptFile(EncryptedFile, DecryptedFile);
-            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(PlainText));
-        }
-
-        private void CreateAsymmetricKey()
+        public void CreateAsymmetricKey()
         {
             _rsaCryptoServiceProvider = new RSACryptoServiceProvider(CspParameters) {PersistKeyInCsp = true};
         }
 
-        private void EncryptFile(string inputFileName, string outputFileName)
+        public void EncryptFile(string inputFileName, string outputFileName)
         {
             var symmetricAlgorithm = GetSymmetricAlgorithm();
             
             // Use RSACryptoServiceProvider to encrypt the Rijndael key.
             var encryptedKey = _rsaCryptoServiceProvider.Encrypt(symmetricAlgorithm.Key, false);
+
 
             using (var outputFileStream = new FileStream(outputFileName, FileMode.Create))
             {
@@ -128,7 +54,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough
             }
         }
 
-        private void DecryptFile(string inputFileName, string outputFileName)
+        public void DecryptFile(string inputFileName, string outputFileName)
         {
             using (var inputFileStream = new FileStream(inputFileName, FileMode.Open))
             {
@@ -160,6 +86,22 @@ namespace CryptographyPlayground.CryptographyWalkthrough
             }
         }
 
+        public void ExportPublicKey(string fileName)
+        {
+            File.WriteAllText(fileName, _rsaCryptoServiceProvider.ToXmlString(false));
+        }
+
+        public void ImportPublicKey(string fileName)
+        {
+            _rsaCryptoServiceProvider = new RSACryptoServiceProvider(CspParameters) {PersistKeyInCsp = true};
+            _rsaCryptoServiceProvider.FromXmlString(File.ReadAllText(fileName));
+        }
+
+        public void GetPrivateKey()
+        {
+            _rsaCryptoServiceProvider = new RSACryptoServiceProvider(CspParameters) {PersistKeyInCsp = true};
+        }
+
         private static SymmetricAlgorithm GetSymmetricAlgorithm()
         {
             return new RijndaelManaged
@@ -170,35 +112,10 @@ namespace CryptographyPlayground.CryptographyWalkthrough
             };
         }
 
-        public void ExportPublicKey()
-        {
-            File.WriteAllText(PublicKeyFile, _rsaCryptoServiceProvider.ToXmlString(false));
-        }
+        private const string KeyPairContainerName = "Key01";
 
-        private void ImportPublicKey()
-        {
-            _rsaCryptoServiceProvider = new RSACryptoServiceProvider(CspParameters) {PersistKeyInCsp = true};
-            _rsaCryptoServiceProvider.FromXmlString(File.ReadAllText(PublicKeyFile));
-        }
+        private static readonly CspParameters CspParameters = new CspParameters { KeyContainerName = KeyPairContainerName };
 
-        private void GetPrivateKey()
-        {
-            _rsaCryptoServiceProvider = new RSACryptoServiceProvider(CspParameters) {PersistKeyInCsp = true};
-        }
-
-        private static void DeleteOutputDirectory()
-        {
-            if (Directory.Exists(OutputDirectory)) Directory.Delete(OutputDirectory, recursive: true);
-        }
-    }
-
-    internal static class StreamExtensions
-    {
-        public static byte[] ReadBytes(this Stream stream, int count)
-        {
-            var buffer = new byte[count];
-            stream.Read(buffer, 0, count);
-            return buffer;
-        }
+        private RSACryptoServiceProvider _rsaCryptoServiceProvider;
     }
 }
