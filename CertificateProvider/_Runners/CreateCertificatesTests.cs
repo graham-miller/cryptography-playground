@@ -11,7 +11,7 @@ namespace CryptographyPlayground.CertificateProvider._Runners
     public class CreateCertificatesTests
     {
         [Test]
-        public void SignDataAndVerify()
+        public void SignAndVerifyData()
         {
             // create the certificates
             var pfx = CertificateGenerator.GenerateSelfSignedCertificate("Graham Miller");
