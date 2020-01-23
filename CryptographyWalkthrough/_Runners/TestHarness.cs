@@ -1,15 +1,14 @@
 using System;
 using System.IO;
+using CryptographyPlayground.Shared;
 using NUnit.Framework;
 
-namespace CryptographyPlayground.CryptographyWalkthrough.Runners
+namespace CryptographyPlayground.CryptographyWalkthrough._Runners
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
     public class TestHarness
     {
-        private const string PlainText = "The greatest glory in living lies not in never falling, but in rising every time we fall.";
-
         private static readonly string OutputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CertificatePlayground2");
         private static readonly string PublicKeyFile = Path.Combine(OutputDirectory, "RSA PublicKey.txt");
         private static readonly string OriginalFile = Path.Combine(OutputDirectory, "original.txt");
@@ -23,7 +22,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough.Runners
         {
             DeleteOutputDirectory();
             Directory.CreateDirectory(OutputDirectory);
-            File.WriteAllText(OriginalFile, PlainText);
+            File.WriteAllText(OriginalFile, Constants.PlainText);
 
             _sut = new Implementation();
         }
@@ -49,7 +48,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough.Runners
             // Decrypt
             _sut.DecryptFile(EncryptedFile, DecryptedFile);
 
-            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(PlainText));
+            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(Constants.PlainText));
         }
 
         [Test]
@@ -81,7 +80,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough.Runners
             Assert.That(_sut.CryptoServiceProviderIsPublicOnly, Is.False);
 
             _sut.DecryptFile(EncryptedFile, DecryptedFile);
-            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(PlainText));
+            Assert.That(File.ReadAllText(DecryptedFile), Is.EqualTo(Constants.PlainText));
         }
 
         private static void DeleteOutputDirectory()

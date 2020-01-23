@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using NUnit.Framework;
 
-namespace CryptographyPlayground.CertificateProvider
+namespace CryptographyPlayground.CertificateProvider._Runners
 {
     public class TestHarness
     {

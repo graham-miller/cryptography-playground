@@ -7,10 +7,10 @@ using System.Text;
 
 namespace CryptographyPlayground.CertificateProvider
 {
-    public class CertificateGenerator
+    public static class CertificateGenerator
     {
         // Ref.: https://stackoverflow.com/a/50138133/1826
-        private X509Certificate2 GenerateSelfSignedCertificate(string commonName) // subject is the entity validated or verified by the certificate
+        public static X509Certificate2 GenerateSelfSignedCertificate(string commonName) // subject is the entity validated or verified by the certificate
         {
             var distinguishedName = new X500DistinguishedName($"CN={commonName}");
             // Could contain:
@@ -19,7 +19,7 @@ namespace CryptographyPlayground.CertificateProvider
             // ST= state or province within country
             // L= location, nominally an address but ambiguously used except in EV certificates where it is rigorously defined
             // OU= organizational unit name, a company division name or similar sub­structure
-            // O= organization name,
+            // O= organization name
 
             using (var rsa = RSA.Create(2048))
             {
@@ -37,18 +37,18 @@ namespace CryptographyPlayground.CertificateProvider
                 // I think only required if using for SSL?
                 //request.CertificateExtensions.Add(LocalSubjectAlternativeName());
 
-                var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
+                var cert = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
 
-                certificate.FriendlyName = commonName;
+                cert.FriendlyName = commonName;
 
-                return certificate;
+                return cert;
 
                 // Why do this?
                 //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "WeNeedASaf3rPassword"), "WeNeedASaf3rPassword", X509KeyStorageFlags.MachineKeySet);
             }
         }
 
-        private X509Extension LocalSubjectAlternativeName()
+        private static X509Extension LocalSubjectAlternativeName()
         {
             var builder = new SubjectAlternativeNameBuilder();
             builder.AddIpAddress(IPAddress.Loopback);

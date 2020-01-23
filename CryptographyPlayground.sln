@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptographyWalkthrough", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertificateProvider", "CertificateProvider\CertificateProvider.csproj", "{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{48DDB7E9-EDA5-4CD4-82EF-28D78D6F2E09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48DDB7E9-EDA5-4CD4-82EF-28D78D6F2E09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48DDB7E9-EDA5-4CD4-82EF-28D78D6F2E09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48DDB7E9-EDA5-4CD4-82EF-28D78D6F2E09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48DDB7E9-EDA5-4CD4-82EF-28D78D6F2E09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
