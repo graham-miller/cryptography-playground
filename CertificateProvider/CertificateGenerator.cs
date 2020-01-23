@@ -48,6 +48,8 @@ namespace CryptographyPlayground.CertificateProvider
             }
         }
 
+
+
         private static X509Extension LocalSubjectAlternativeName()
         {
             var builder = new SubjectAlternativeNameBuilder();
