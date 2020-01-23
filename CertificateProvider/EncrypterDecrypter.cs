@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace CryptographyPlayground.Playground1
+namespace CryptographyPlayground.CertificateProvider
 {
     public class EncrypterDecrypter
     {

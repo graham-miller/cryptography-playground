@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>CryptographyPlayground.Playground2</RootNamespace>
+    <RootNamespace>CryptographyPlayground.CertificateProvider</RootNamespace>
 
-    <AssemblyName>CryptographyPlayground.Playground2</AssemblyName>
+    <AssemblyName>CryptographyPlayground.CertificateProvider</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

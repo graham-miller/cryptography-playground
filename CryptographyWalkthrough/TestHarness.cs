@@ -3,11 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using NUnit.Framework;
 
-namespace CryptographyPlayground.Playground2
+namespace CryptographyPlayground.CryptographyWalkthrough
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
-    public class CryptographyWalkthrough
+    public class TestHarness
     {
         private const string KeyPairContainerName = "Key01";
         private const string PlainText = "The greatest glory in living lies not in never falling, but in rising every time we fall.";

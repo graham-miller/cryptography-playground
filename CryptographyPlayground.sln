@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playground1", "Playground1\Playground1.csproj", "{F2364E34-C710-4A68-A2A6-44652BB5C5AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptographyWalkthrough", "CryptographyWalkthrough\CryptographyWalkthrough.csproj", "{52715FD5-07B7-40E3-9CD7-FE4971BE8756}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground2", "Playground2\Playground2.csproj", "{E3C94A65-6F19-4E8E-9C27-98263BC80523}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertificateProvider", "CertificateProvider\CertificateProvider.csproj", "{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F2364E34-C710-4A68-A2A6-44652BB5C5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2364E34-C710-4A68-A2A6-44652BB5C5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2364E34-C710-4A68-A2A6-44652BB5C5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2364E34-C710-4A68-A2A6-44652BB5C5AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3C94A65-6F19-4E8E-9C27-98263BC80523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3C94A65-6F19-4E8E-9C27-98263BC80523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3C94A65-6F19-4E8E-9C27-98263BC80523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3C94A65-6F19-4E8E-9C27-98263BC80523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52715FD5-07B7-40E3-9CD7-FE4971BE8756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52715FD5-07B7-40E3-9CD7-FE4971BE8756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52715FD5-07B7-40E3-9CD7-FE4971BE8756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52715FD5-07B7-40E3-9CD7-FE4971BE8756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CBB3A9C-1140-4725-94D5-EC3FF44A5A63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

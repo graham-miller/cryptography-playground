@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using NUnit.Framework;
 
-namespace CryptographyPlayground.Playground1
+namespace CryptographyPlayground.CertificateProvider
 {
-    public class Tests
+    public class TestHarness
     {
         // Ref.: https://stackoverflow.com/a/50138133/1826
         // Ref.: http://paulstovell.com/blog/x509certificate2 (Eight tips for working with X.509 certificates in .NET)
