@@ -37,36 +37,44 @@ namespace CryptographyPlayground.CertificateProvider._Runners
         [Test]
         public void VerifyCertificate()
         {
-            // create the certificates
-            var root = CertificateGenerator.GenerateSelfSignedCertificate("Demo Root Graham Miller");
-            Assert.That(root.HasPrivateKey, Is.True);
+            // create certificates
+            var caCertificate = CertificateGenerator.GenerateCertificateAuthorityCertificate("Certificate Authority - Graham Miller");
+            var leafCertificate = CertificateGenerator.GenerateSignedCertificate("Graham Miller", caCertificate);
+            Assert.That(caCertificate.Verify(), Is.False);
+            Assert.That(leafCertificate.Verify(), Is.False);
 
-            //var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            //store.Open(OpenFlags.ReadWrite);
-            //store.Add(root);
-            //store.Close();
+            AddCertificateToStore(caCertificate);
+            Assert.That(caCertificate.Verify(), Is.True);
+            Assert.That(leafCertificate.Verify(), Is.False);
 
+            RemoveCertificateFromStore(caCertificate);
+            Assert.That(caCertificate.Verify(), Is.False);
+            Assert.That(leafCertificate.Verify(), Is.False);
+        }
 
-            //var leaf = CertificateGenerator.GenerateCertificate("Graham Miller");
+        private static void AddCertificateToStore(X509Certificate2 certificate)
+        {
+            var store = GetCertificateStore(OpenFlags.ReadWrite);
+            store.Add(certificate);
+            store.Close();
+        }
 
+        private static void RemoveCertificateFromStore(X509Certificate2 certificate)
+        {
+            var store = GetCertificateStore(OpenFlags.ReadWrite);
 
-
-
-            //var cer = new X509Certificate2(root.Export(X509ContentType.Cert));
-            //Assert.That(cer.HasPrivateKey, Is.False);
-
-            //var result = cer.Verify();
-
-            //Assert.That(result, Is.True);
-
-            var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            store.Open(OpenFlags.ReadWrite);
-            foreach (var item in store.Certificates.Find(X509FindType.FindBySubjectName, "Demo Root Graham Miller", false))
-            {
+            foreach (var item in store.Certificates.Find(X509FindType.FindBySubjectName, certificate.FriendlyName, false))
                 store.Remove(item);
-            }
 
             store.Close();
+        }
+
+        private static X509Store GetCertificateStore(OpenFlags openFlags)
+        {
+            var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+            store.Open(openFlags);
+
+            return store;
         }
 
         private const string Password = "password";
