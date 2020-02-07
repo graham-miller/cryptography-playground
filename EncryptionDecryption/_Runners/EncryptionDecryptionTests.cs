@@ -7,7 +7,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough._Runners
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
-    public class TestHarness
+    public class EncryptionDecryptionTests
     {
         private static readonly string OutputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CertificatePlayground2");
         private static readonly string PublicKeyFile = Path.Combine(OutputDirectory, "RSA PublicKey.txt");
@@ -15,7 +15,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough._Runners
         private static readonly string EncryptedFile = Path.Combine(OutputDirectory, "encrypted.enc");
         private static readonly string DecryptedFile = Path.Combine(OutputDirectory, "decrypted.txt");
 
-        private Implementation _sut;
+        private EncryptionDecryption _sut;
 
         [SetUp]
         public void SetUp()
@@ -24,7 +24,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough._Runners
             Directory.CreateDirectory(OutputDirectory);
             File.WriteAllText(OriginalFile, Constants.PlainText);
 
-            _sut = new Implementation();
+            _sut = new EncryptionDecryption();
         }
 
         [TearDown]

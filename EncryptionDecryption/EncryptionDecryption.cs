@@ -6,7 +6,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
-    public class Implementation
+    public class EncryptionDecryption
     {
         public bool CryptoServiceProviderIsPublicOnly => _rsaCryptoServiceProvider.PublicOnly;
 

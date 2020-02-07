@@ -1,20 +1,23 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using CryptographyPlayground.Shared;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+using Constants = CryptographyPlayground.Shared.Constants;
 
 namespace CryptographyPlayground.CertificateProvider._Runners
 {
     [TestFixture]
-    public class CreateCertificatesTests
+    public class CertificateProviderTests
     {
+        // Ref.: https://stackoverflow.com/a/50138133/1826
+        // Ref.: http://paulstovell.com/blog/x509certificate2 (Eight tips for working with X.509 certificates in .NET)
+        // Ref.: https://github.com/dotnet/corefx/blob/master/Documentation/architecture/cross-platform-cryptography.md#x509store (Cross-Platform Cryptography, also https://stackoverflow.com/a/57937687/1826)
         [Test]
         public void SignAndVerifyData()
         {
             // create the certificates
-            var pfx = CertificateGenerator.GenerateSelfSignedCertificate("Graham Miller");
+            var pfx = CertificateProvider.GenerateSelfSignedCertificate("Graham Miller");
             Assert.That(pfx.HasPrivateKey, Is.True);
 
             var cer = new X509Certificate2(pfx.Export(X509ContentType.Cert));
@@ -38,18 +41,53 @@ namespace CryptographyPlayground.CertificateProvider._Runners
         public void VerifyCertificate()
         {
             // create certificates
-            var caCertificate = CertificateGenerator.GenerateCertificateAuthorityCertificate("Certificate Authority - Graham Miller");
-            var leafCertificate = CertificateGenerator.GenerateSignedCertificate("Graham Miller", caCertificate);
+            var caCertificate = CertificateProvider.GenerateCertificateAuthorityCertificate("Certificate Authority - Graham Miller");
+            var leafCertificate = CertificateProvider.GenerateSignedCertificate("Graham Miller", caCertificate);
             Assert.That(caCertificate.Verify(), Is.False);
             Assert.That(leafCertificate.Verify(), Is.False);
+            Assert.That(Verify(leafCertificate), Is.False);
 
             AddCertificateToStore(caCertificate);
             Assert.That(caCertificate.Verify(), Is.True);
             Assert.That(leafCertificate.Verify(), Is.False);
+            Assert.That(Verify(leafCertificate), Is.True);
 
             RemoveCertificateFromStore(caCertificate);
             Assert.That(caCertificate.Verify(), Is.False);
             Assert.That(leafCertificate.Verify(), Is.False);
+            Assert.That(Verify(leafCertificate), Is.False);
+        }
+
+        private bool Verify(X509Certificate2 certificate)
+        {
+            var chain = new X509Chain
+            {
+                ChainPolicy = new X509ChainPolicy
+                {
+                    RevocationMode = X509RevocationMode.NoCheck,
+                    //VerificationFlags = X509VerificationFlags.IgnoreNotTimeValid,
+                    //UrlRetrievalTimeout = new TimeSpan(0, 1, 0)
+                }
+            };
+
+            var valid = false;
+
+            try
+            {
+                valid = chain.Build(certificate);
+                
+                Console.WriteLine($"Chain building status: {valid}");
+
+                if (!valid)
+                    foreach (var chainStatus in chain.ChainStatus)
+                        Console.WriteLine($"Chain error: {chainStatus.Status} {chainStatus.StatusInformation}");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+            }
+
+            return valid;
         }
 
         private static void AddCertificateToStore(X509Certificate2 certificate)
@@ -76,7 +114,5 @@ namespace CryptographyPlayground.CertificateProvider._Runners
 
             return store;
         }
-
-        private const string Password = "password";
     }
 }

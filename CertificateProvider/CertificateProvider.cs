@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace CryptographyPlayground.CertificateProvider
 {
-    public static class CertificateGenerator
+    public static class CertificateProvider
     {
         // Ref.: https://stackoverflow.com/a/50138133/1826
+
         public static X509Certificate2 GenerateSelfSignedCertificate(string commonName) // subject is the entity validated or verified by the certificate
         {
             var distinguishedName = new X500DistinguishedName($"CN={commonName}");
@@ -37,14 +36,14 @@ namespace CryptographyPlayground.CertificateProvider
                 // I think only required if using for SSL?
                 //request.CertificateExtensions.Add(LocalSubjectAlternativeName());
 
-                var cert = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
+                var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
 
-                cert.FriendlyName = commonName;
+                certificate.FriendlyName = commonName;
 
-                return cert;
+                return certificate;
 
                 // Why do this?
-                //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "WeNeedASaf3rPassword"), "WeNeedASaf3rPassword", X509KeyStorageFlags.MachineKeySet);
+                //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, Constants.Password), Constants.Password, X509KeyStorageFlags.MachineKeySet);
             }
         }
 
@@ -96,14 +95,14 @@ namespace CryptographyPlayground.CertificateProvider
                 request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(
                     new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, false));
 
-                var cert = request.Create(signingCertificate, new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)), Guid.NewGuid().ToByteArray());
+                var certificate = request.Create(signingCertificate, new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)), Guid.NewGuid().ToByteArray());
 
-                cert.FriendlyName = commonName;
+                certificate.FriendlyName = commonName;
 
-                return cert;
+                return certificate;
 
                 // Why do this?
-                //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "WeNeedASaf3rPassword"), "WeNeedASaf3rPassword", X509KeyStorageFlags.MachineKeySet);
+                //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, Constants.Password), Constants.Password, X509KeyStorageFlags.MachineKeySet);
             }
         }
 

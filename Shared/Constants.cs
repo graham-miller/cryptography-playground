@@ -9,5 +9,7 @@ namespace CryptographyPlayground.Shared
 
         public const string DifferentPlainText = "The greatest glory in living lies not in never falling, but in rising every time we fall!"; // exclamation instead of full stop;
         public static readonly byte[] DifferentPlainBytes = Encoding.Default.GetBytes(DifferentPlainText);
+
+        public const string Password = "password";
     }
 }
