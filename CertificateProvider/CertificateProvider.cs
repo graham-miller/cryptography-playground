@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace CryptographyPlayground.CertificateProvider
 {
@@ -100,10 +102,62 @@ namespace CryptographyPlayground.CertificateProvider
                 certificate.FriendlyName = commonName;
 
                 return certificate;
-
-                // Why do this?
-                //return new X509Certificate2(certificate.Export(X509ContentType.Pfx, Constants.Password), Constants.Password, X509KeyStorageFlags.MachineKeySet);
             }
+        }
+
+        // Ref.: http://luca.ntop.org/Teaching/Appunti/asn1.html (A Layman's Guide to a Subset of ASN.1, BER, and DER)
+        // Ref.: https://obj-sys.com/asn1tutorial/node124.html (ASN.1 Listing of Universal Tags)
+
+        public static X509Certificate2 GenerateSignedCertificateWithOcsp(string commonName, X509Certificate2 signingCertificate)
+        {
+            var distinguishedName = new X500DistinguishedName($"CN={commonName}");
+
+            using (var rsa = RSA.Create(2048))
+            {
+                var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                
+                //=============================================================
+                var ocspResponder = "https://localhost:44390/";
+
+                //request.CertificateExtensions.Add(new X509Extension(new AsnEncodedData("1.2.840.113549.1.9.7", DerEncoding.EncodePrintableString(challenge)), false));
+                //request.CertificateExtensions.Add(new X509Extension(new Oid("1.3.6.1.5.5.7.1.1"), Encoding.UTF8.GetBytes(ocspResponder), false));
+
+                request.CertificateExtensions.Add(new X509Extension(new Oid("1.3.6.1.5.5.7.1.1"), EncodePrintableString(ocspResponder), false));
+
+
+                //var oid = new Oid("1.3.6.1.5.5.7.1.1");
+                //byte[] rawData = new byte[0]; // Encoding.UTF8.GetBytes($"URL={ocspResponder}");
+                //var encodedExtension = new AsnEncodedData(oid, rawData);
+                //var item = new X509Extension(encodedExtension, critical: true);
+                //request.CertificateExtensions.Add(item);
+
+                
+                //=============================================================
+
+                var certificate = request.Create(signingCertificate, new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)), Guid.NewGuid().ToByteArray());
+
+                certificate.FriendlyName = commonName;
+
+                return certificate;
+            }
+        }
+
+        public static byte[] EncodePrintableString(string data)
+        {
+            var dataBytes = Encoding.ASCII.GetBytes(data);
+            var result = GetDerBytes(0x13, dataBytes);
+
+            return result;
+        }
+
+        private static byte[] GetDerBytes(int tag, byte[] data)
+        {
+            if (data.Length > byte.MaxValue) throw new NotSupportedException("Support for integers greater than 255 not yet implemented.");
+
+            var header = new [] { (byte)tag, (byte)data.Length };
+            var result = header.Concat(data).ToArray();
+
+            return result;
         }
 
         private static X509Extension LocalSubjectAlternativeName()

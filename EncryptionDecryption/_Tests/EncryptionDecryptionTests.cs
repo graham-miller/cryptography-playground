@@ -3,7 +3,7 @@ using System.IO;
 using CryptographyPlayground.Shared;
 using NUnit.Framework;
 
-namespace CryptographyPlayground.CryptographyWalkthrough._Runners
+namespace CryptographyPlayground.CryptographyWalkthrough._Tests
 {
     // Ref.: https://docs.microsoft.com/en-us/dotnet/standard/security/walkthrough-creating-a-cryptographic-application
 
@@ -30,7 +30,7 @@ namespace CryptographyPlayground.CryptographyWalkthrough._Runners
         [TearDown]
         public void TearDown()
         {
-            DeleteOutputDirectory();
+            //DeleteOutputDirectory();
         }
 
         [Test]
